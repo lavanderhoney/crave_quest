@@ -2,9 +2,6 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './Styles/Navbarstyles.css';
 import Button from './Components/Button';
-import { Routes, Route } from 'react-router-dom';
-import Signup from './Pages/Signup';
-import Login from './Pages/Login';
 
 export default function Navbar() {
     return (
@@ -13,9 +10,6 @@ export default function Navbar() {
                 <div className='text-white flex justify-between items-center text-[20px]'>
                     <Link
                         to="/"
-                        smooth={true}
-                        offset={-500}
-                        duration={550}
                         className='font-bold text-[30px] tracking-wider'
                     >
                         CraveQuest
