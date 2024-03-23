@@ -8,18 +8,21 @@ import Login from './Pages/Login'
 import Signup from './Pages/Signup'
 import { Routes, Route } from 'react-router-dom'
 import './index.css';
+import { AuthContextProvider } from './context/AuthContext';
 
 function App() {
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route path='/' element={<Herosection />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/explore' element={<Explore />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-      </Routes>
+      <AuthContextProvider>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<Herosection />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/explore' element={<Explore />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+        </Routes>
+      </AuthContextProvider>
     </>
   );
 }
