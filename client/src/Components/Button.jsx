@@ -7,7 +7,7 @@ export default function Button(props) {
     const btnClass = `w-[211px] h-[60px] border-[1px] ${bgColor} rounded-full ${textColor}`;
     return (
         <>
-            <button className={btnClass}>
+            <button className={btnClass} onClick={props.onClick}>
                 {props.text}
             </button>
         </>
