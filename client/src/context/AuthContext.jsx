@@ -9,7 +9,6 @@ export const AuthContextProvider = ({ children }) => {
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider);
     }
-
     const logOut = async () => {
         try {
             await signOut(auth);

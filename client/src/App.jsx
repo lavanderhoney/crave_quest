@@ -9,6 +9,8 @@ import Signup from './Pages/Signup'
 import { Routes, Route } from 'react-router-dom'
 import './index.css';
 import { AuthContextProvider } from './context/AuthContext';
+import UserDashboard from './Pages/UserDashboard';
+import Protected from './Protected';
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
           <Route path='/explore' element={<Explore />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/userdash' element={<Protected><UserDashboard /></Protected>} />
         </Routes>
       </AuthContextProvider>
     </>
