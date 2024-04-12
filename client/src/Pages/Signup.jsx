@@ -3,8 +3,11 @@ import FormInput from '../Components/FormInput'
 import Button from '../Components/Button'
 import GoogleButton from 'react-google-button'
 import { UserAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 export default function Signup() {
-    const { GoogleSignIn } = UserAuth();
+    const { GoogleSignIn, user } = UserAuth();
+    const navigate = useNavigate();
 
     const handleGoogleSignIn = async () => {
         try {
@@ -13,6 +16,13 @@ export default function Signup() {
             console.log(error);
         }
     }
+    useEffect(() => {
+        if (user != null) {
+            navigate('/userdash');
+        }
+
+    }, [user])
+
     return (
         <div className='flex flex-col items-center justify-center'>
             <h2 className='text-gray-700 text-center text-5xl m-10'>Get started with CraveQuest!</h2>
