@@ -2,8 +2,20 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './Styles/Navbarstyles.css';
 import Button from './Components/Button';
+import { UserAuth } from './context/AuthContext';
 
 export default function Navbar() {
+    const { user, logOut } = UserAuth();
+    console.log("User in nav: ", user);
+
+    const handleLogOut = async () => {
+        try {
+            console.log("inside handlelogout");
+            await logOut()
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <nav className='p-10'>
@@ -27,9 +39,11 @@ export default function Navbar() {
                         >
                             Explore
                         </Link>
-                        <Link to="/signup">
+                        {user?.displayName != null ? <Button text="Logout" onClick={handleLogOut} /> : <Link to="/signup">
                             <Button text="Get Started!" bgColor="bg-white" textColor="text-red-500" />
-                        </Link>
+                        </Link>}
+                        {console.log(user?.displayName)}
+
                         <Link to="/login"> <Button text="Login" /></Link>
                     </div>
                 </div>
