@@ -1,11 +1,12 @@
 import React from 'react'
 import Button from '../Components/Button'
-import RecipeCard from '../Components/RecipeCard'
+import RecipeCard from '../Components/Recipe/RecipeCard'
 import { UserAuth } from '../context/AuthContext';
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "../index.css"
+import SearchBar from '../Components/SearchBar';
 export default function UserDashboard() {
     const { logOut, user } = UserAuth();
     const handleLogOut = async () => {
@@ -18,14 +19,14 @@ export default function UserDashboard() {
     }
     const [recipes, setRecipes] = useState([]);
     const [search, setSearch] = useState("");
-    const [query, setQuery] = useState("chicken");
+    const [query, setQuery] = useState("");
 
     useEffect(() => {
         getRecipes();
     }, [query]);
 
     const getRecipes = async () => {
-        const response = await axios.get(`http://localhost:5000/recipes/watermelon`);
+        const response = await axios.get(`http://localhost:5000/recipes/` + query);
         // console.log(response.data.hits);
         // console.log(response.data)
         setRecipes(response.data);
@@ -52,19 +53,8 @@ export default function UserDashboard() {
         <div>
             <h1>Welcome {user?.displayName}</h1>
             <Button text="Log out" onClick={handleLogOut} />
-            // <RecipeCard />
-            <form onSubmit={getSearch} className="border-black rounded-md">
-                <input
-                    className="search-bar"
-                    type="text"
-                    value={search}
-                    onChange={updateSearch}
-                />
-                <button className="search-button" type="submit">
-                    Search
-                </button>
-            </form>
-            <div className="recipe">
+            <SearchBar getSearch={getSearch} search={search} updateSearch={updateSearch}/>
+            <div className="flex-auto justify-center ml-auto mr-auto">
                 {recipes.map((recipe) => (
                     <RecipeCard
                         key={recipe.recipe.label}
