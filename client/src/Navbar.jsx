@@ -16,6 +16,7 @@ export default function Navbar() {
             console.log(error);
         }
     }
+    
     return (
         <>
             <nav className='p-10'>
