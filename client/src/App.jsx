@@ -8,14 +8,16 @@ import Login from './Pages/Login'
 import Signup from './Pages/Signup'
 import { Routes, Route } from 'react-router-dom'
 import './index.css';
-import { AuthContextProvider } from './context/AuthContext';
-import UserDashboard from './Pages/UserDashboard';
+import { AuthContextProvider, UserAuth } from './context/AuthContext';
 import Protected from './Protected';
+import UserProfile from './Components/UserProfile';
 
 function App() {
+  // const {user,logOut} = UserAuth();
   return (
     <>
       <AuthContextProvider>
+        {/* {user?.displayName == null ?<Navbar />:<SideBar/>} */}
         <Navbar />
         <Routes>
           <Route path='/' element={<Herosection />} />
@@ -23,7 +25,9 @@ function App() {
           <Route path='/explore' element={<Explore />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
-          <Route path='/userdash' element={<Protected><UserDashboard /></Protected>} />
+          <Route path='/userdash' element={<Protected>
+            <UserProfile />
+          </Protected>} />
         </Routes>
       </AuthContextProvider>
     </>
