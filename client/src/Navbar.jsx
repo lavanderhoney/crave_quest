@@ -19,7 +19,7 @@ export default function Navbar() {
     
     return (
         <>
-            <nav className='p-10'>
+            <nav className='p-10 nav1'>
                 <div className='text-white flex justify-between items-center text-[20px]'>
                     <Link
                         to="/"
