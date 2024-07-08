@@ -1,5 +1,5 @@
 import React from 'react'
-import RecipeCard from '../Components/Recipe/RecipeCard'
+import RecipeCard2 from '../Components/Recipe/RecipeCard'
 import { UserAuth } from '../context/AuthContext';
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -7,15 +7,7 @@ import "../index.css"
 import SearchBar from '../Components/SearchBar';
 
 export default function UserDashboard() {
-    const { logOut, user } = UserAuth();
-    const handleLogOut = async () => {
-        try {
-            console.log("inside handlelogout");
-            await logOut()
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const { user } = UserAuth();
     const [recipes, setRecipes] = useState([]);
     const [search, setSearch] = useState("");
     const [query, setQuery] = useState("");
@@ -25,16 +17,19 @@ export default function UserDashboard() {
     }, [query]);
 
     const getRecipes = async () => {
-        const response = await axios.get(`http://localhost:5000/recipes/` + query);
-        // console.log(response.data.hits);
-        // console.log(response.data)
-        setRecipes(response.data);
-        response.data.map((recipe) => {
-            console.log(recipe.recipe.ingredientLines);
-            recipe.recipe.ingredientLines.map((line) => {
-                console.log(line);
-            })
-        })
+        try {
+            const response = await axios.get(`http://localhost:5000/recipes/` + query);
+            // console.log(response.data.hits);
+            // console.log(response.data)
+            setRecipes(response.data);
+            // response.data.map((recipe) => {
+            //     console.log("recipe object: ",recipe);
+            //     // console.log(recipe.recipe.ingredientLines);
+            // })
+        } catch (error) {
+
+        }
+
     };
 
     const updateSearch = (e) => {
@@ -53,16 +48,18 @@ export default function UserDashboard() {
             <div>
                 <h1 className='font-serif m-2 my-4 text-4xl '>Welcome {user?.displayName}, find the recipe you crave now !</h1>
                 <SearchBar getSearch={getSearch} search={search} updateSearch={updateSearch} />
-                <div className="flex-auto justify-center ml-auto mr-auto">
-                    {recipes.map((recipe) => (
-                        <RecipeCard
-                            key={recipe.recipe.label}
+                <div class="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+                    {recipes.map((recipe, index) => (
+                        <RecipeCard2
+                            key={index}
                             title={recipe.recipe.label}
                             image={recipe.recipe.image}
                             ingredients={recipe.recipe.ingredientLines}
                         />
                     ))}
                 </div>
+
+                {/* <RecipeCard2></RecipeCard2> */}
             </div>
         </div>
     )
