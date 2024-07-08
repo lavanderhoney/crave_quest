@@ -2,10 +2,11 @@ import React, { createContext, useContext, useState } from "react";
 import { ChevronFirst, ChevronLast } from "lucide-react";
 import { LogOut } from "lucide-react";
 import { UserAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const SideBarContext = createContext();
 export default function SideBar({ children }) {
-  
+
   const [expanded, setExpanded] = useState(true);
   const { user, logOut } = UserAuth();
   const handleLogOut = async () => {
@@ -17,14 +18,20 @@ export default function SideBar({ children }) {
   };
 
   return (
-    <aside className="h-screen h-full bg-violet-400">
+    <aside className="h-screen bg-violet-400">
       <nav className="h-full flex flex-col bg-white border-r shadow-md">
         <div className="p-4 pb-2 flex justify-between items-center">
-          <img
-            src="https://img.logoipsum.com/243.svg"
-            className={`overflow-hidden transition-all duration-300 ${expanded ? "w-32 opacity-100" : "w-0 opacity-0 absolute left-full"}`}
-            alt=""
-          ></img>
+          <Link
+            to="/"
+            className='font-bold text-[30px] tracking-wider'
+          >
+            <img
+              src="https://img.logoipsum.com/243.svg"
+              className={`overflow-hidden transition-all duration-300 ${expanded ? "w-32 opacity-100" : "w-0 opacity-0 absolute left-full"}`}
+              alt=""
+            ></img>
+          </Link>
+
           <button
             onClick={() => {
               setExpanded((curr) => !curr);
@@ -76,11 +83,11 @@ export function SideBarItem({ icon, text }) {
 
         {!expanded && (
           <div
-          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-rose-100 text-rose-800 text-sm invisible
+            className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-rose-100 text-rose-800 text-sm invisible
       opacity-20  -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`
-      }>
-          {text}
-        </div>)}
+            }>
+            {text}
+          </div>)}
       </li>
     </>
   );
