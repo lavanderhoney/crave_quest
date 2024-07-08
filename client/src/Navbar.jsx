@@ -41,12 +41,21 @@ export default function Navbar() {
                                 >
                                     Explore
                                 </Link>
-                                {user?.displayName != null ? <Button text="Logout" onClick={handleLogOut} /> : <Link to="/signup">
+                                {user?.displayName != null ? 
+                                <Link
+                                    to="/userdash"
+                                    className='relative text-xl w-fit block after:block after:content-[""] after:ab"solute after:h-[3px] after:bg-amber-500 after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-left'
+                                >
+                                    Go to Dashboard
+                                </Link> 
+                                : 
+                                <Link to="/signup">
                                     <Button text="Get Started!" bgColor="bg-white" textColor="text-red-500" />
                                 </Link>}
                                 {console.log(user?.displayName)}
-
-                                <Link to="/login"> <Button text="Login" /></Link>
+                                
+                                {user?.displayName != null ? null : <Link to="/login"> <Button text="Login" /></Link>}
+                                
                             </div>
                         </div>
                     </nav>
