@@ -5,16 +5,8 @@ import Button from './Components/Button';
 import { UserAuth } from './context/AuthContext';
 import { useLocation } from 'react-router-dom';
 export default function Navbar() {
-    const { user, logOut } = UserAuth();
+    const { user } = UserAuth();
     const location = useLocation();
-    const handleLogOut = async () => {
-        try {
-            console.log("inside handlelogout");
-            await logOut()
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     return (
         <>

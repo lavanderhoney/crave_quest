@@ -6,7 +6,7 @@ export default function RecipeText(props) {
         <div className='p-2'>
             <div className="col-start-2 row-start-2 row-end-12">
                 <ou>
-                    {Array.isArray(ingredients) && ingredients.map((ingredient) => (
+                    {Array.isArray(ingredients) && ingredients.map((ingredient,index) => (
                         <li>{ingredient}</li>
                         // console.log("in map", ingredient)
                     ))}
