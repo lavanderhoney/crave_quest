@@ -1,13 +1,11 @@
 import React from 'react'
 import RecipeCard2 from '../Components/Recipe/RecipeCard'
-import { UserAuth } from '../context/AuthContext';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "../index.css"
 import SearchBar from '../Components/SearchBar';
 
 export default function UserMain() {
-    const { user } = UserAuth();
     const [recipes, setRecipes] = useState([]);
     const [search, setSearch] = useState("");
     const [query, setQuery] = useState("");
@@ -25,8 +23,8 @@ export default function UserMain() {
 
             }]
             const response = await axios.get(`http://localhost:5000/recipes/` + query);
-            // console.log(response.data.hits);
-            // console.log(response.data)
+            console.log("hits: ",response.data.hits);
+            console.log("response data: ",response.data)
             setRecipes(response.data);
 
         } catch (error) {
