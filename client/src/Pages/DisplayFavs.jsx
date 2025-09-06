@@ -34,7 +34,7 @@ export default function DisplayFavs() {
                             key={index}
                             title={recipe.title}
                             image={recipe.image}
-                            ingredients={recipe.ingredientLines}
+                            ingredients={recipe.ingredients}
                         />
                     ))}
                 </div>
