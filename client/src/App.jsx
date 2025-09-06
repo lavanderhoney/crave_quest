@@ -10,14 +10,13 @@ import { Routes, Route } from 'react-router-dom'
 import './index.css';
 import { AuthContextProvider, UserAuth } from './context/AuthContext';
 import Protected from './Protected';
-import UserProfile from './Components/UserProfile';
+import UserProfile from './Pages/UserProfile';
 
 function App() {
   // const {user,logOut} = UserAuth();
   return (
     <>
       <AuthContextProvider>
-        {/* {user?.displayName == null ?<Navbar />:<SideBar/>} */}
         <Navbar />
         <Routes>
           <Route path='/' element={<Herosection />} />

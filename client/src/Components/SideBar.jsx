@@ -18,7 +18,7 @@ export default function SideBar({ children }) {
   };
 
   return (
-    <aside className="h-screen bg-violet-400">
+    <aside className={`h-screen bg-violet-400 fixed ${expanded ? "!w-64 opacity-100" : "!w-fit "}`} >
       <nav className="h-full flex flex-col bg-white border-r shadow-md">
         <div className="p-4 pb-2 flex justify-between items-center">
           <Link
@@ -27,7 +27,7 @@ export default function SideBar({ children }) {
           >
             <img
               src="https://img.logoipsum.com/243.svg"
-              className={`overflow-hidden transition-all duration-300 ${expanded ? "w-32 opacity-100" : "w-0 opacity-0 absolute left-full"}`}
+              className={`overflow-hidden transition-all duration-300 ${expanded ? "!w-32 opacity-100" : "w-0 opacity-0 absolute left-full"}`}
               alt=""
             ></img>
           </Link>
@@ -43,7 +43,7 @@ export default function SideBar({ children }) {
         </div>
 
         <SideBarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
+          <ul className="flex-1 px-3 align-middle justify-start w-full">{children}</ul>
         </SideBarContext.Provider>
         <div className="flex p-4 border-t bg-amber-50 justify-between gap-2">
           <img
@@ -52,7 +52,7 @@ export default function SideBar({ children }) {
             className="w-10 h-10 rounded-lg"
           ></img>
           <div
-            className={`flex justify-between items-center overflow-hidden transition-all ml-3 duration-300 ${expanded ? "w-32 opacity-100" : "w-0 opacity-0"
+            className={`flex justify-between items-center overflow-hidden transition-all ml-3 duration-300 ${expanded ? "!w-32 opacity-100" : "w-0 opacity-0"
               } `}
           >
             <div className="leading-4">
@@ -72,13 +72,13 @@ export default function SideBar({ children }) {
   );
 }
 
-export function SideBarItem({ icon, text }) {
+export function SideBarItem({ icon, text, onItemClick }) {
   const { expanded } = useContext(SideBarContext);
   return (
-    <>
-      <li className="relative flex items-center py-2 px-3 my-2 font-medium cursor-pointer group">
+    <div className="flex align-middle justify-start" onClick={() => onItemClick(text)}>
+      <li className="relative flex items-center py-2 my-2 font-medium cursor-pointer group align-middle justify-start">
         {icon}
-        <span className={`overflow-hidden transition-all duration-100 ${expanded ? "w-32 opacity-100 m-3" : "w-0 opacity-0"
+        <span className={`overflow-hidden transition-all duration-100 ${expanded ? "!w-32 opacity-100 m-3" : "w-0 opacity-0"
           }`}>{text}</span>
 
         {!expanded && (
@@ -89,6 +89,6 @@ export function SideBarItem({ icon, text }) {
             {text}
           </div>)}
       </li>
-    </>
+    </div>
   );
 }
