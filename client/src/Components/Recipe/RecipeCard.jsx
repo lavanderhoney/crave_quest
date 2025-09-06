@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../../src/index.css";
 import RecipeImage from "./RecipeImage";
 import RecipeText from "./RecipeText";
 import { Star, StarOff } from "lucide-react";
-import { db } from "../../firebase";
-import { collection, addDoc, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
+import { addRecipe, addFavorite, removeFavorite } from "../../services/firestore";
 import { UserAuth } from "../../context/AuthContext";
 
 
@@ -23,35 +22,53 @@ function parseIngredients(meal) {
 
 const RecipeCard2 = ({ meal }) => {
     const { user } = UserAuth();
+    const [isFavorited, setIsFavorited] = useState(false);
     const title = meal.strMeal;
+    const recipeId = meal.idMeal;
     const image = meal.strMealThumb;
     const instructions = meal.strInstructions;
     const ingredients = parseIngredients(meal);
 
+    // Toggle favorite status - add or remove from favorites
     const handleFavClick = async () => {
+        if (!user || !user.uid) {
+           throw new Error("User is not authenticated");
+        }
+        
         try {
-            const existingDocsSnapshot = await getDocs(query(collection(db, 'SavedRecipes'), where('title', '==', title)));
-            if (!existingDocsSnapshot.empty) {
-                const existingDoc = existingDocsSnapshot.docs[0];
-                const usersFavs = [...existingDoc.data().usersFavs, user.uid];
-                await updateDoc(doc(db, 'SavedRecipes', existingDoc.id), {
-                    usersFavs: usersFavs
+            if (isFavorited) {
+                // Remove from favorites
+                await removeFavorite({
+                    userId: user.uid,
+                    recipeId: recipeId
                 });
+                setIsFavorited(false);
+                console.log('Recipe removed from user favorites');
             } else {
-                const docRef = await addDoc(collection(db, 'SavedRecipes'), {
+                // Add recipe to Recipes collection if not already present
+                await addRecipe({
+                    id: recipeId,
                     image: image,
                     title: title,
                     ingredients: ingredients,
-                    usersFavs: [user.uid]
+                    instructions: instructions,
+                    area: meal.strArea,
+                    category: meal.strCategory,
+                    tags: meal.strTags,
                 });
-                console.log('Document written with ID: ', docRef.id);
+                
+                // Add to user's Favorites subcollection
+                await addFavorite({
+                    userId: user.uid,
+                    recipeId: recipeId
+                });
+                setIsFavorited(true);
+                console.log('Recipe added to user favorites');
             }
         } catch (error) {
-            console.error("Error adding document: ", error);
+            console.error('Error updating favorite status:', error);
         }
-    }
-
-    return (
+    };    return (
         <div className="rounded overflow-hidden shadow-lg flex flex-col">
             <div className="flex-grow">
                 <RecipeImage image={image} />
@@ -75,7 +92,7 @@ const RecipeCard2 = ({ meal }) => {
             </div>
             <hr />
             <button className="m-5 p-2 h-fit" onClick={handleFavClick}>
-                <Star />
+                {isFavorited ? <Star fill="gold" color="gold" /> : <StarOff />}
             </button>
         </div>
     )

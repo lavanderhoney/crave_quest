@@ -4,10 +4,12 @@ import Button from '../Components/Button'
 import GoogleButton from 'react-google-button'
 import { UserAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { createUser } from '../services/firestore'
 export default function Signup() {
     const { GoogleSignIn, user } = UserAuth();
     const navigate = useNavigate();
+    const hasCreatedUser = useRef(false);
 
     const handleGoogleSignIn = async () => {
         try {
@@ -17,11 +19,16 @@ export default function Signup() {
         }
     }
     useEffect(() => {
-        if (user != null) {
+        if (user && !hasCreatedUser.current) {
+            // Add user to Firestore if not already added
+            createUser({
+                email: user.email,
+                name: user.displayName || '',
+            });
+            hasCreatedUser.current = true;
             navigate('/userdash');
         }
-
-    }, [user])
+    }, [user, navigate]);
 
     return (
         <div className='flex flex-col items-center justify-center'>
