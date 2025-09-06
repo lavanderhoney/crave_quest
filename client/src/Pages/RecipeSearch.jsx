@@ -11,39 +11,17 @@ export default function UserMain() {
     const [query, setQuery] = useState("");
 
     const getRecipes = async () => {
-        console.log("query: ",query);
         try {
-            const recipeError = [{
-                recipe:
-                {
-                    label: "Not Found",
-                    image: "",
-                    ingredientLines: ""
-                }
-
-            }]
-            const response = await axios.get(`http://localhost:5000/recipes/` + query);
-            console.log("hits: ",response.data.hits);
-            console.log("response data: ",response.data)
-            setRecipes(response.data);
-
+            const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
+            if (response.data.meals) {
+                setRecipes(response.data.meals);
+            } else {
+                setRecipes([]);
+            }
         } catch (error) {
-            console.log(error);
-            const recipeError = [{
-                recipe:
-                {
-                    label: "Not Found",
-                    image: "",
-                    ingredientLines: error.message
-                }
-
-            }]
-            console.log("eror obj:", recipeError);
-            setRecipes(recipeError);
-            console.log(recipes);
-            console.log("[0]: ", recipes[0].recipe);
+            console.error(error);
+            setRecipes([]);
         }
-
     };
 
     const updateSearch = (e) => {
@@ -65,30 +43,22 @@ export default function UserMain() {
         // setSearch("");
     };
 
+
     return (
         <div className='w-full'>
-                <SearchBar getSearch={getSearch} search={search} updateSearch={updateSearch} />
-                {recipes.length === 0 || search===""? (<h2 className='text-center text-slate-500 text-3xl font-thin'>Type a keyword in the searchbar to start searching</h2>) :
-                    (
-                        recipes[0].recipe.label === 'Not Found' ? (
-                            <div className='flex flex-col justify-center'>
-                                <div className="text-center p-5 text-red-700 font-bold text-2xl">Sorry, we couldn't find any recipes.</div>
-                                <span className="text-center p-5 text-red-600 font-semibold text-xl">{recipes[0].recipe.ingredientLines}</span>
-                            </div>
-                        ) :
-                            <div class="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
-                                {recipes.map((recipe, index) => (
-                                    <RecipeCard2
-                                        key={index}
-                                        title={recipe.recipe.label}
-                                        image={recipe.recipe.image}
-                                        ingredients={recipe.recipe.ingredientLines}
-                                    />
-                                ))}
-                            </div>
-                    )
-                }
-
+            <SearchBar getSearch={getSearch} search={search} updateSearch={updateSearch} />
+            {recipes.length === 0 || search === "" ? (
+                <h2 className='text-center text-slate-500 text-3xl font-thin'>Type a keyword in the searchbar to start searching</h2>
+            ) : (
+                <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+                    {recipes.map((meal, index) => (
+                        <RecipeCard2
+                            key={meal.idMeal || index}
+                            meal={meal}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

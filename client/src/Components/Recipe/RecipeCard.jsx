@@ -7,20 +7,33 @@ import { db } from "../../firebase";
 import { collection, addDoc, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import { UserAuth } from "../../context/AuthContext";
 
-const RecipeCard2 = ({ title, image, ingredients }) => {
+
+// Helper to parse ingredients and measures from MealsDB meal object
+function parseIngredients(meal) {
+    const ingredients = [];
+    for (let i = 1; i <= 20; i++) {
+        const ingredient = meal[`strIngredient${i}`];
+        const measure = meal[`strMeasure${i}`];
+        if (ingredient && ingredient.trim() !== "") {
+            ingredients.push(measure ? `${measure.trim()} ${ingredient.trim()}` : ingredient.trim());
+        }
+    }
+    return ingredients;
+}
+
+const RecipeCard2 = ({ meal }) => {
     const { user } = UserAuth();
+    const title = meal.strMeal;
+    const image = meal.strMealThumb;
+    const instructions = meal.strInstructions;
+    const ingredients = parseIngredients(meal);
+
     const handleFavClick = async () => {
         try {
             const existingDocsSnapshot = await getDocs(query(collection(db, 'SavedRecipes'), where('title', '==', title)));
             if (!existingDocsSnapshot.empty) {
-                console.log("A document with this title already exists.");
-                console.log(existingDocsSnapshot.docs[0]);
-
-                //get the existing recipe (doc)
                 const existingDoc = existingDocsSnapshot.docs[0];
-                const usersFavs = [...existingDoc.data().usersFavs,user.uid]; 
-
-                // Update the document with the modified 'usersFavs' array
+                const usersFavs = [...existingDoc.data().usersFavs, user.uid];
                 await updateDoc(doc(db, 'SavedRecipes', existingDoc.id), {
                     usersFavs: usersFavs
                 });
@@ -37,6 +50,7 @@ const RecipeCard2 = ({ title, image, ingredients }) => {
             console.error("Error adding document: ", error);
         }
     }
+
     return (
         <div className="rounded overflow-hidden shadow-lg flex flex-col">
             <div className="flex-grow">
@@ -46,15 +60,20 @@ const RecipeCard2 = ({ title, image, ingredients }) => {
                     <p className="text-gray-700 text-base">
                         <RecipeText ingredients={ingredients} />
                     </p>
+                    <div className="mt-2 text-sm text-gray-600">
+                        {instructions}
+                    </div>
                 </div>
+                {/* Optionally, display tags or area/category */}
                 <div className="px-6 pt-4 pb-2">
-                    <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-                    <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-                    <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
+                    {meal.strCategory && <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{meal.strCategory}</span>}
+                    {meal.strArea && <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{meal.strArea}</span>}
+                    {meal.strTags && meal.strTags.split(',').map((tag, idx) => (
+                        <span key={idx} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{tag.trim()}</span>
+                    ))}
                 </div>
-
             </div>
-            <hr></hr>
+            <hr />
             <button className="m-5 p-2 h-fit" onClick={handleFavClick}>
                 <Star />
             </button>
