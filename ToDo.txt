@@ -1,0 +1,12 @@
+1. Fix UserDashboard:
+   - The Welcome part 
+   - search bar alignment and search button styling
+   - Dark Color: Card -> #2D3133 Backgrnd -> #181A1B
+
+2. DB:
+   - user upload an avatar
+   - store favourites
+
+3. Integrate use of LLMs/ ChatGPT:
+   - display a summary of recipe first, then on clicking card, flip and display more
+   - show most important labels ?
