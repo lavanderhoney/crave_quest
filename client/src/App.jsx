@@ -1,5 +1,4 @@
 import React from 'react'
-import './App.css';
 import Herosection from './Components/Herosection'
 import Navbar from './Navbar'
 import About from './Components/About'
