@@ -1,14 +1,15 @@
 import { db } from "../firebase";   
 import { collection, addDoc, getDocs, query, where, doc, deleteDoc, documentId } from "firebase/firestore";
-
+import { setDoc, getDoc } from "firebase/firestore";
 export async function createUser(params) {
     try {
-        const docRef = await addDoc(collection(db, 'Users'), {
+        const userRef = doc(db, 'Users', params.userId);
+        await setDoc(userRef, { // Use userId as the document ID, not auto-generated. Reconciles with firestore's rules
             email: params.email,
             name: params.name,
             createdAt: Date.now(),
         });
-        console.log('Document written with ID: ', docRef.id);
+        console.log('Document written with ID: ', userRef.id);
     } catch (error) {
         console.error("Error adding document: ", error);
     }
@@ -18,15 +19,13 @@ export async function createUser(params) {
 export async function addRecipe(params) {
     try {
         // Check if recipe already exists using the recipe ID
-        const recipesRef = collection(db, 'Recipes');
-        const q = query(recipesRef, where("id", "==", params.id));
-        const snapshot = await getDocs(q);
-        
-        if (!snapshot.empty) {
+        const recipeRef = doc(db, 'Recipes', params.id);
+        const snapshot = await getDoc(recipeRef);
+
+        if (snapshot.exists()) {
             console.log('Recipe already exists in Recipes collection');
         } else {
-            const docRef = await addDoc(collection(db, 'Recipes'), {
-                id: params.id,
+            const docRef = await setDoc(recipeRef, {
                 title: params.title,
                 image: params.image,
                 ingredients: params.ingredients,
@@ -36,7 +35,7 @@ export async function addRecipe(params) {
                 tags: params.tags,
                 createdAt: Date.now(),
             });
-            console.log('Recipe document written with ID: ', docRef.id);
+            console.log('Recipe document written with ID: ', docRef);
         }
     } catch (error) {
         console.error("Error adding document: ", error);
@@ -78,12 +77,21 @@ export async function removeFavorite(params) {
 }
 
 export async function getFavoriteRecipes(params) {
+    // Accept either a userId string or an object { userId }
+    const userId = typeof params === 'string' ? params : params?.userId;
     try {
-
         // 1. Get the user's favorite recipes ids
-        const favRef = collection(db, "Users", params.userId, "Favorites");
+        const favRef = collection(db, "Users", userId, "Favorites");
+        console.log("Fetching favorite recipes for user:", userId);
         const favDocs = await getDocs(favRef);
+
         const recipeIds = Array.from(favDocs.docs.map(doc => doc.data().recipeId));
+        console.log("Favorite Recipe IDs: ", recipeIds);
+        
+        if (recipeIds.length === 0) {
+            console.log("No favorite recipes found for user:", params.userId);
+            return [];
+        }
 
         // 2. Fetch the recipe details for the favorite recipe ids
         const recipesRef = collection(db, "Recipes");

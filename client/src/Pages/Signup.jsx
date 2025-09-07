@@ -22,6 +22,7 @@ export default function Signup() {
         if (user && !hasCreatedUser.current) {
             // Add user to Firestore if not already added
             createUser({
+                userId: user.uid,
                 email: user.email,
                 name: user.displayName || '',
             });
